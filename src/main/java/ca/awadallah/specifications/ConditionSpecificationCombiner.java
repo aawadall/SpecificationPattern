@@ -30,7 +30,6 @@ public class ConditionSpecificationCombiner<T> implements SpecificationCombiner<
 
     @Override
     public SpecificationCombiner<T> reset() {
-        this.condition = null;
-        return this;
+        return new ConditionSpecificationCombiner<T>() ;
     }
 }
