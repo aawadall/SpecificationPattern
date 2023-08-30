@@ -4,6 +4,9 @@ import ca.awadallah.models.Book;
 import ca.awadallah.sources.BookSource;
 import ca.awadallah.specifications.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Main {
     public static void main(String[] args) {
         var bookSource = new BookSource();
@@ -14,34 +17,35 @@ public class Main {
         var thisYear = java.time.Year.now().getValue();
         Condition<Book> pastTenYears = new LambdaCondition<>(book -> book.getYear() > thisYear - 10);
 
-        Condition<Book> after2000 = new BookPublishedAfterYearCondition(1900);
-        Condition<Book> startsWithT = new BookTitleStartsWithCondition("t");
-        SpecificationCombiner<Book> combiner = new ConditionSpecificationCombiner();
-        Condition<Book> filter = combiner.with(after2000).or(startsWithT);
-        Condition<Book> recentShort = combiner.with(pastTenYears).and(shortTitle);
-        while (randomBoolean()) {
-            var book = bookSource.generateBook();
+        Condition<Book> before2000 = new LambdaCondition<>(book -> book.getYear() < 2000);
+        Condition<Book> titleStartsWith = new LambdaCondition<>(book -> book.getTitle().contains("t") || book.getTitle().contains("u") || book.getTitle().startsWith("i"));
+        SpecificationCombiner<Book> combiner = new ConditionSpecificationCombiner<>();
+        Condition<Book> cat1 = combiner.with(before2000).and(titleStartsWith);
 
-            if (recentShort.isSatisfiedBy(book)) {
-                System.out.print("RECENT SHORT: ");
-            } else {
-                System.out.print("              ");
-            }
-            System.out.print(book.toString());
+        Condition<Book> cat2 = combiner.reset().with(pastTenYears).and(shortTitle);
 
-            if (filter.isSatisfiedBy(book)) {
-                System.out.println(" ***");
-            } else {
-                System.out.println();
-            }
+        var books = bookSource.generateBooks(33);
 
-        }
+        var cat1Books = filter(books, cat1);
+        var cat2Books = filter(books, cat2);
 
+        System.out.println("Category 1 books:");
+        System.out.println("====================================");
+        cat1Books.forEach(System.out::println);
+
+        System.out.println();
+        System.out.println("Category 2 books:");
+        System.out.println("====================================");
+        cat2Books.forEach(System.out::println);
     }
 
     private static boolean randomBoolean() {
         var coin = Math.random();
         //System.out.println(coin);
         return coin > 0.015;
+    }
+
+    private static <T> List<T> filter(List<T> items, Condition<T> condition) {
+        return items.stream().filter(condition::isSatisfiedBy).collect(Collectors.toList());
     }
 }

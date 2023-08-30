@@ -1,5 +1,7 @@
 package ca.awadallah.specifications;
 
+import ca.awadallah.models.Book;
+
 public class ConditionSpecificationCombiner<T> implements SpecificationCombiner<T>{
 
     private  Condition<T> condition;
@@ -23,6 +25,12 @@ public class ConditionSpecificationCombiner<T> implements SpecificationCombiner<
     @Override
     public SpecificationCombiner<T> with(Condition<T> condition) {
         this.condition = condition;
+        return this;
+    }
+
+    @Override
+    public SpecificationCombiner<T> reset() {
+        this.condition = null;
         return this;
     }
 }

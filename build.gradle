@@ -17,3 +17,11 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+def mainClassName = 'ca.awadallah.Main'
+
+// custom run task
+task run(type: JavaExec, dependsOn: 'classes') {
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+}

@@ -19,6 +19,8 @@ public class LambdaCondition<T> implements Condition<T> {
 
     @Override
     public boolean isSatisfiedBy(T item) {
-        return this.predicate.test(item);
+        boolean test = this.predicate.test(item);
+        System.out.println("Testing " + item.toString() + " with " + this.predicate + " = " + test);
+        return test;
     }
 }

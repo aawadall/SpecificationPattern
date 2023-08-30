@@ -2,6 +2,8 @@ package ca.awadallah.sources;
 
 import ca.awadallah.models.Book;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class BookSource {
@@ -14,6 +16,11 @@ public class BookSource {
     public BookSource() {
         this.random = new Random();
     }
+
+    /**
+     * Generate a random book
+     * @return a book
+     */
     public Book generateBook() {
         return new Book(randomTitle(), randomAuthor(), randomYear());
     }
@@ -39,5 +46,18 @@ public class BookSource {
 
     private int randomYear() {
         return  (int)random.nextGaussian(originYear, divergenceYear);
+    }
+
+    /**
+     * Generate random books
+     * @param count number of books to generate
+     * @return list of books
+     */
+    public List<Book> generateBooks(int count) {
+        var books = new ArrayList<Book>();
+        for (int i = 0; i < count; i++) {
+            books.add(generateBook());
+        }
+        return books;
     }
 }
